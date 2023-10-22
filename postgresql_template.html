@@ -1,0 +1,151 @@
+<html>
+<head>
+    <title>PostgreSQL Data</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <style>
+        /* Apply background color to the table header */
+        #data-table thead th {
+            background-color: #333;
+            color: white;
+        }
+
+        /* Apply background color to even rows */
+        #data-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Apply background color to odd rows */
+        #data-table tbody tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        /* Add border to table cells */
+        #data-table tbody td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        /* Define styles for rows that meet condition-1 */
+        .condition-1 {
+            background-color: orange;
+            color: white;
+            font-weight: bold;
+            /* Add any other styling properties you want */
+        }
+        .condition-2 {
+            background-color: red;
+            color: red;
+            font-weight: bold;
+            /* Add any other styling properties you want */
+        }
+
+    </style>
+</head>
+<body>
+    <h1>PostgreSQL Data for DDX Namespaces</h1>
+    <label for="color-filter"> Filter by Color: </label>
+    <select id="color-filter">
+        <option value="all">All</option>
+        <option value="condition-2">Red</option>
+        <option value="condition-1">Amber</option>   
+    </select>
+    <table id="data-table" class="display">
+        <thead>
+            <tr>
+                <th>Namespace</th>
+                <th>Name</th>
+                <th>nodeType</th>
+                <th>storageType</th>
+                <th>multiAZ</th>
+                <th>COST(USD)Per Month</th>
+                <!-- Dynamically add table headers for fields -->
+                {% for field in data[0]['spec'] if field not in exclude_fields and field not in ['nodeType', 'storageType', 'multiAZ', 'COST'] %}
+                    <th>{{ field }}</th>
+                {% endfor %}
+                <!-- Add the "Cost (USD)" column header -->
+                <th>Cost (USD)</th>
+            </tr>
+        </thead>
+        <tbody>
+             <!-- Loop through data while keeping track of instance names -->
+             {% set unique_instance_names = set() %}
+
+             <!-- Dynamically add table rows and data -->
+             {% for item in data %}
+                 {% set instance_name = item["metadata"]["name"] %}
+                 {% if instance_name not in unique_instance_names %}
+                 <!-- Add the instance name to the set to mark it as processed -->
+                      {% set _ = unique_instance_names.add(instance_name) %}
+                      <tr class="{{ item['highlight'] }}">
+                          <td>{{ item["metadata"]["namespace"] }}</td>
+                          <td>{{ instance_name }}</td>
+                          <td>{{ item["spec"]["nodeType"] }}</td>
+                          <td>{{ item["spec"]["storageType"] }}</td>
+                          <td>{{ item["spec"]["multiAZ"] }}</td>
+                          <td>{{ item["cost"]|default('N/A') }}</td>
+            <!-- Dynamically add table data cells for fields with headers -->
+                          {% for field in data[0]['spec'] if field not in exclude_fields and field not in ['nodeType', 'storageType', 'multiAZ', 'COST'] %}
+                              <td>{{ item["spec"][field] }}</td>
+                          {% endfor %}
+            <!-- Display the calculated cost in the "Cost (USD)" column -->
+
+                      </tr>
+                 {% endif %}
+             {% endfor %}
+
+            <!-- Dynamically add table rows and data -->
+            {% for item in data %}
+                <tr class="{% if item['multiAZ'] == True and not item['metadata']['namespace']|slice(-4) in ['prod', 'stage', 'perf'] %}condition-1{% endif %}">
+                    <td>{{ item["metadata"]["namespace"] }}</td>
+                    <td>{{ item["metadata"]["name"] }}</td>
+                    <!-- Dynamically add table data cells for fields with headers -->
+                    {% for field in data[0]['spec'] if field not in exclude_fields %}
+                        <td>{{ item["spec"][field] }}</td>
+                    {% endfor %}
+                    <!-- Display the calculated cost in the "Cost (USD)" column -->
+                    <td>{{ item["cost"]|default('N/A') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var table = $('#data-table').DataTable();
+
+            // Enable column-wise filtering with unique values as checkboxes
+            table.columns().every(function() {
+                var column = this;
+                var colIndex = column[0][0];
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo($(column.header()))
+                    .on('change', function() {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column.search(val ? '^' + val + '$' : '', true, false).draw();
+                    });
+
+                column.data().unique().sort().each(function(d) {
+                    select.append('<option value="' + d + '">' + d + '</option>');
+                });
+            });
+            $(#"color-filter").change(function() {
+                var selectedColor = $(this).val();
+                var rows = $("#data-table tbody tr");
+                if(selectedColor == "all") {
+                    //rows.show();
+                    table.columns().search('').draw();
+                }
+                else {
+                    //rows.hide();
+                    //rows.filter("," + selectedColor).show();
+                    table.columns().search('^' + selectedColor + '$', true, false).draw();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+[
+    {
+        "region": "us-east-1",
+        "nodeType": "db.m6g.large",
+        "cost": {
+            "multiAZ": "0.363",
+            "singleAZ": "0.181"
+        },
+        "extracosts": {
+            "gp2": "0.23",
+            "gp3": "0.23"
+        }
+    },
+    {
+        "region": "us-west-2",
+        "nodeType": "db.t2.micro",
+        "cost": {
+            "multiAZ": "0.1",
+            "singleAZ": "0.05"
+        },
+        "extracosts": {
+            "gp2": "0.1",
+            "gp3": "0.1"
+        }
+    }
+]
