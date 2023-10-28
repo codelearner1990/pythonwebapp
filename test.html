@@ -1,43 +1,20 @@
 $("#total-cost-button").click(function() {
-    var table = $('#data-table').DataTable();
-    
-    // Get the column filters
-    var columnFilters = table.columns().search();
-    
-    // Check if any column filter is applied
-    var isColumnFilterApplied = columnFilters.some(function(filter) {
-        return filter !== '';
-    });
-
-    // Filter the table data based on the selected color
     var selectedColor = $("#color-filter").val();
-    var filteredData = [];
-    
+    var totalCost = 0;
+
+    // Calculate total cost based on color filter
     if (selectedColor === "all") {
-        // No color filter applied, use all data
-        filteredData = table.rows().data().toArray();
+        // No color filter, calculate cost for all rows
+        $(".condition-1, .condition-2").each(function() {
+            totalCost += parseFloat($(this).find("td:nth-child(6)").text().replace(/\$/, ''));
+        });
     } else {
-        // Color filter applied, filter based on color
-        filteredData = table.rows(".condition-1, .condition-2").data().toArray();
-    }
-    
-    // Filter further based on column filters if applied
-    if (isColumnFilterApplied) {
-        var filteredIndices = table.rows({ search: "applied" }).indexes();
-        filteredData = filteredData.filter(function(_, index) {
-            return filteredIndices.toArray().includes(index);
+        // Color filter applied, calculate cost for matching rows
+        $("." + selectedColor).each(function() {
+            totalCost += parseFloat($(this).find("td:nth-child(6)").text().replace(/\$/, ''));
         });
     }
-    
-    // Calculate the total cost from the filtered data
-    var totalCost = filteredData.reduce(function(acc, row) {
-        var cost = parseFloat(row[5].replace(',', '').substring(1)); // Assuming "COST(USD)PerMonth" is the 6th column
-        if (!isNaN(cost)) {
-            return acc + cost;
-        }
-        return acc;
-    }, 0);
-    
+
     // Display the total cost
     $("#total-cost").text(totalCost.toFixed(2));
 });
