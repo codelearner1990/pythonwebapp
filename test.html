@@ -1,20 +1,17 @@
-$("#total-cost-button").click(function() {
-    var selectedColor = $("#color-filter").val();
-    var totalCost = 0;
+            table.columns().every(function() {
+                var column = this;
+                var colIndex = column.index();
 
-    // Calculate total cost based on color filter
-    if (selectedColor === "all") {
-        // No color filter, calculate cost for all rows
-        $(".condition-1, .condition-2").each(function() {
-            totalCost += parseFloat($(this).find("td:nth-child(6)").text().replace(/\$/, ''));
-        });
-    } else {
-        // Color filter applied, calculate cost for matching rows
-        $("." + selectedColor).each(function() {
-            totalCost += parseFloat($(this).find("td:nth-child(6)").text().replace(/\$/, ''));
-        });
-    }
+                // Create a dropdown with checkboxes for multiple value selection
+                var dropdown = $('<select id="column-dropdown-' + colIndex + '" multiple="multiple"></select>')
+                    .appendTo($(column.header()))
+                    .on('change', function() {
+                        var selectedValues = $(this).val();
+                        column.search(selectedValues ? selectedValues.join('|') : '', true, false).draw();
+                    });
 
-    // Display the total cost
-    $("#total-cost").text(totalCost.toFixed(2));
-});
+                // Populate the dropdown with unique values from the column
+                column.data().unique().sort().each(function(d) {
+                    dropdown.append('<option value="' + d + '">' + d + '</option>');
+                });
+            });
