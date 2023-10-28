@@ -1,7 +1,8 @@
 <div>
     <label for="exclude-keywords">Exclude:</label>
     <input type="text" id="exclude-keywords" placeholder="Enter keywords to exclude">
-    <br>
+</div>
+<div>
     <label for="search-input">Search:</label>
     <input type="text" id="search-input" placeholder="Search records">
 </div>
@@ -13,7 +14,20 @@
         // Handle the "exclude" input
         $('#exclude-keywords').on('keyup', function() {
             var excludeKeywords = this.value.split(',').map(keyword => keyword.trim());
-            table.draw();
+
+            // Remove the existing filtering to apply the exclusion
+            table.columns().every(function() {
+                var column = this;
+                column.search('').draw();
+            });
+
+            // Apply the exclusion filter
+            excludeKeywords.forEach(keyword => {
+                table.columns().every(function() {
+                    var column = this;
+                    column.search(`^(?!.*${keyword}).*$`, true, false).draw();
+                });
+            });
         });
 
         // Handle the default search input
@@ -22,3 +36,4 @@
         });
     });
 </script>
+
