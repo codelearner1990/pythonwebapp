@@ -1,7 +1,9 @@
-<!-- Add this code to your template -->
 <div>
     <label for="exclude-keywords">Exclude:</label>
     <input type="text" id="exclude-keywords" placeholder="Enter keywords to exclude">
+    <br>
+    <label for="search-input">Search:</label>
+    <input type="text" id="search-input" placeholder="Search records">
 </div>
 
 <script>
@@ -11,18 +13,12 @@
         // Handle the "exclude" input
         $('#exclude-keywords').on('keyup', function() {
             var excludeKeywords = this.value.split(',').map(keyword => keyword.trim());
-            table.column().search('').draw();
-            if (excludeKeywords.length > 0) {
-                table.column().data().each(function (value, index) {
-                    for (var i = 0; i < excludeKeywords.length; i++) {
-                        if (value.includes(excludeKeywords[i])) {
-                            table.cell(index, table.column().index()).search('excluded', true, false);
-                            break;
-                        }
-                    }
-                });
-            }
             table.draw();
+        });
+
+        // Handle the default search input
+        $('#search-input').on('keyup', function() {
+            table.search(this.value).draw();
         });
     });
 </script>
