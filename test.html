@@ -1,17 +1,28 @@
-            table.columns().every(function() {
-                var column = this;
-                var colIndex = column.index();
+<script>
+    $(document).ready(function() {
+        var table = $('#data-table').DataTable();
 
-                // Create a dropdown with checkboxes for multiple value selection
-                var dropdown = $('<select id="column-dropdown-' + colIndex + '" multiple="multiple"></select>')
-                    .appendTo($(column.header()))
-                    .on('change', function() {
-                        var selectedValues = $(this).val();
-                        column.search(selectedValues ? selectedValues.join('|') : '', true, false).draw();
-                    });
+        // Initialize search and exclude values
+        var searchValue = '';
+        var excludeValue = '';
 
-                // Populate the dropdown with unique values from the column
-                column.data().unique().sort().each(function(d) {
-                    dropdown.append('<option value="' + d + '">' + d + '</option>');
-                });
-            });
+        // Handle the built-in DataTables search bar
+        table.on('search.dt', function() {
+            searchValue = table.search();
+            applySearchAndExcludeFilters();
+        });
+
+        // Handle the "exclude" input
+        $('#exclude-keywords').on('keyup', function() {
+            excludeValue = this.value;
+            applySearchAndExcludeFilters();
+        });
+
+        // Function to apply both search and exclude filters
+        function applySearchAndExcludeFilters() {
+            // Create a combined regex for search and exclude
+            var combinedRegex = `(${searchValue})^(?!.*(${excludeValue.split(',').map(keyword => keyword.trim()).join('|')})).*$`;
+            table.search(combinedRegex, true, false).draw();
+        }
+    });
+</script>
