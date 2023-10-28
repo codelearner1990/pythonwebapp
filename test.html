@@ -37,3 +37,44 @@
     });
 </script>
 
+
+
+
+
+<div>
+    <label for="exclude-keywords">Exclude:</label>
+    <input type="text" id="exclude-keywords" placeholder="Enter keywords to exclude">
+</div>
+<div>
+    <label for="search-input">Search:</label>
+    <input type="text" id="search-input" placeholder="Search records">
+</div>
+
+<script>
+    $(document).ready(function() {
+        var table = $('#data-table').DataTable();
+
+        // Handle the "exclude" input
+        $('#exclude-keywords').on('keyup', function() {
+            var excludeKeywords = this.value.split(',').map(keyword => keyword.trim());
+
+            // Clear existing filters
+            table.columns().search('').draw();
+
+            // Apply the exclusion filter
+            if (excludeKeywords.length > 0) {
+                var exclusionRegex = excludeKeywords.map(keyword => `(?=.*${keyword})`).join('');
+                table.search(`^(?!${exclusionRegex}).*$`, true, false).draw();
+            } else {
+                // If no exclusion keywords, show all records
+                table.draw();
+            }
+        });
+
+        // Handle the default search input
+        $('#search-input').on('keyup', function() {
+            var searchValue = this.value.trim();
+            table.search(searchValue).draw();
+        });
+    });
+</script>
