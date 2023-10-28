@@ -1,34 +1,43 @@
 $("#total-cost-button").click(function() {
     var table = $('#data-table').DataTable();
-
-    // Get the selected color filter
-    var selectedColor = $("#color-filter").val();
-
+    
+    // Get the column filters
+    var columnFilters = table.columns().search();
+    
     // Check if any column filter is applied
-    var columnFilterApplied = table.columns().indexes().some(function(index) {
-        return table.column(index).search() !== '';
+    var isColumnFilterApplied = columnFilters.some(function(filter) {
+        return filter !== '';
     });
 
     // Filter the table data based on the selected color
-    var filteredData = table.rows(function(index, data, node) {
-        if (selectedColor === "all") {
-            return !columnFilterApplied || columnFilterApplied;
-        } else if (selectedColor === "condition-1") {
-            return (!columnFilterApplied || columnFilterApplied) && $(node).hasClass("condition-1");
-        } else if (selectedColor === "condition-2") {
-            return (!columnFilterApplied || columnFilterApplied) && $(node).hasClass("condition-2");
-        }
-        return false;
-    }).data();
-
+    var selectedColor = $("#color-filter").val();
+    var filteredData = [];
+    
+    if (selectedColor === "all") {
+        // No color filter applied, use all data
+        filteredData = table.rows().data().toArray();
+    } else {
+        // Color filter applied, filter based on color
+        filteredData = table.rows(".condition-1, .condition-2").data().toArray();
+    }
+    
+    // Filter further based on column filters if applied
+    if (isColumnFilterApplied) {
+        var filteredIndices = table.rows({ search: "applied" }).indexes();
+        filteredData = filteredData.filter(function(_, index) {
+            return filteredIndices.toArray().includes(index);
+        });
+    }
+    
     // Calculate the total cost from the filtered data
-    var totalCost = filteredData
-        .column(5)
-        .data()
-        .reduce(function(acc, val) {
-            return acc + (parseFloat(val) || 0);
-        }, 0);
-
+    var totalCost = filteredData.reduce(function(acc, row) {
+        var cost = parseFloat(row[5].replace(',', '').substring(1)); // Assuming "COST(USD)PerMonth" is the 6th column
+        if (!isNaN(cost)) {
+            return acc + cost;
+        }
+        return acc;
+    }, 0);
+    
     // Display the total cost
     $("#total-cost").text(totalCost.toFixed(2));
 });
