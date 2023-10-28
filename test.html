@@ -43,18 +43,22 @@
 $('#exclude-keywords').on('keyup', function() {
     var excludeKeywords = this.value.split(',').map(keyword => keyword.trim());
 
-    if (excludeKeywords.length === 0) {
-        // If no exclusion keywords, show all records
+    // Remove the existing filtering to apply the exclusion
+    table.columns().every(function() {
+        var column = this;
+        column.search('').draw();
+    });
+
+    // Apply the exclusion filter for each keyword
+    excludeKeywords.forEach(keyword => {
         table.columns().every(function() {
             var column = this;
-            column.search('').draw();
+            column.search(`^(?!.*${keyword}).*$`, true, false);
         });
-    } else {
-        // Apply the exclusion filter
-        table.columns().every(function() {
-            var column = this;
-            column.search(`^(?!.*(${excludeKeywords.join('|')})).*$`, true, false).draw();
-        });
-    }
+    });
+
+    // Redraw the table
+    table.draw();
 });
+
 
