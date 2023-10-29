@@ -52,6 +52,9 @@ $(document).ready(function() {
         "stateSave": true
     });
 
+    // Define an object to store the initial search state for each column
+    var initialSearchState = {};
+
     // Enable column-wise filtering with unique values as checkboxes
     table.columns().every(function() {
         var column = this;
@@ -68,20 +71,23 @@ $(document).ready(function() {
         column.data().unique().sort().each(function(d) {
             select.append('<option value="' + d + '">' + d + '</option>');
         });
+
+        // Store the initial search state for this column
+        initialSearchState[column.index()] = column.search();
     });
 
     $('#exclude-keywords').on('keyup', function() {
         var excludeKeywords = this.value.split(',').map(keyword => keyword.trim());
 
-        // Apply the exclusion filter for each keyword
         table.columns().every(function() {
             var column = this;
-            column.search('').draw();
-        });
+            var columnIndex = column.index();
 
-        excludeKeywords.forEach(keyword => {
-            table.columns().every(function() {
-                var column = this;
+            // Revert to the initial search state for this column
+            column.search(initialSearchState[columnIndex]).draw();
+
+            // Apply the exclusion filter for each keyword
+            excludeKeywords.forEach(keyword => {
                 var searchValue = `^(?!.*${$.fn.dataTable.util.escapeRegex(keyword)}).*$`;
                 column.search(searchValue, true, false);
             });
@@ -91,6 +97,5 @@ $(document).ready(function() {
     });
 });
 </script>
-
 
 
