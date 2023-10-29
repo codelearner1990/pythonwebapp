@@ -52,8 +52,8 @@ $(document).ready(function() {
         "stateSave": true
     });
 
-    // Define an object to store the initial search state for each column
-    var initialSearchState = {};
+    // Define a variable to store exclusion keywords
+    var excludeKeywords = [];
 
     // Enable column-wise filtering with unique values as checkboxes
     table.columns().every(function() {
@@ -71,29 +71,25 @@ $(document).ready(function() {
         column.data().unique().sort().each(function(d) {
             select.append('<option value="' + d + '">' + d + '</option>');
         });
-
-        // Store the initial search state for this column
-        initialSearchState[column.index()] = column.search();
     });
 
     $('#exclude-keywords').on('keyup', function() {
-        var excludeKeywords = this.value.split(',').map(keyword => keyword.trim());
+        // Get the exclusion keywords
+        excludeKeywords = this.value.split(',').map(keyword => keyword.trim());
 
-        table.columns().every(function() {
-            var column = this;
-            var columnIndex = column.index();
-
-            // Revert to the initial search state for this column
-            column.search(initialSearchState[columnIndex]).draw();
-
-            // Apply the exclusion filter for each keyword
-            excludeKeywords.forEach(keyword => {
-                var searchValue = `^(?!.*${$.fn.dataTable.util.escapeRegex(keyword)}).*$`;
-                column.search(searchValue, true, false);
-            });
-        });
-
+        // Redraw the table to apply the filter
         table.draw();
+    });
+
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        // Function to filter records based on exclusion keywords
+        var record = data.join(' ');
+        for (var i = 0; i < excludeKeywords.length; i++) {
+            if (record.includes(excludeKeywords[i])) {
+                return false; // Exclude the record
+            }
+        }
+        return true; // Include the record
     });
 });
 </script>
