@@ -57,6 +57,28 @@
             border-color: #007BFF;
         }
 
+         .btn {
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+    
+    .btn-primary {
+        background-color: #007BFF;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darken the blue a bit on hover */
+        transform: translateY(-1px); /* Small upward shift on hover */
+    }
+
+    .btn-primary:active {
+        background-color: #004499; /* Even darker blue on active click */
+        transform: translateY(1px); /* Small downward shift on active click */
+    }
+
     </style>
 </head>
 <body>
