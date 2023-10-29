@@ -40,25 +40,57 @@
 
 
 
-$('#exclude-keywords').on('keyup', function() {
-    var excludeKeywords = this.value.split(',').map(keyword => keyword.trim());
 
-    // Remove the existing filtering to apply the exclusion
-    table.columns().every(function() {
-        var column = this;
-        column.search('').draw();
+<!-- Add an input field for excluding keywords -->
+<input type="text" id="exclude-keywords" placeholder="Exclude Keywords" />
+
+<script>
+$(document).ready(function() {
+    var table = $('#data-table').DataTable({
+        "pageLength": 20,
+        "lengthMenu": [20, 40, 60, 100, 200, 400, 600],
+        "stateSave": true
     });
 
-    // Apply the exclusion filter for each keyword
-    excludeKeywords.forEach(keyword => {
-        table.columns().every(function() {
-            var column = this;
-            column.search(`^(?!.*${keyword}).*$`, true, false);
+    // Enable column-wise filtering with unique values as checkboxes
+    table.columns().every(function() {
+        var column = this;
+        var select = $('<select multiple="multiple"><option value=""></option></select>')
+            .appendTo($(column.header()))
+            .on('change', function() {
+                var selectedValues = $.map($(this).find('option:selected'), function(option) {
+                    return '^' + $.fn.dataTable.util.escapeRegex($(option).val()) + '$';
+                });
+                var searchValue = selectedValues.join('|');
+                column.search(searchValue, true, false).draw();
+            });
+
+        column.data().unique().sort().each(function(d) {
+            select.append('<option value="' + d + '">' + d + '</option>');
         });
     });
 
-    // Redraw the table
-    table.draw();
+    $('#exclude-keywords').on('keyup', function() {
+        var excludeKeywords = this.value.split(',').map(keyword => keyword.trim());
+
+        // Apply the exclusion filter for each keyword
+        table.columns().every(function() {
+            var column = this;
+            column.search('').draw();
+        });
+
+        excludeKeywords.forEach(keyword => {
+            table.columns().every(function() {
+                var column = this;
+                var searchValue = `^(?!.*${$.fn.dataTable.util.escapeRegex(keyword)}).*$`;
+                column.search(searchValue, true, false);
+            });
+        });
+
+        table.draw();
+    });
 });
+</script>
+
 
 
