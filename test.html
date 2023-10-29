@@ -1,22 +1,6 @@
-def apply_conditions(item):
-    namespace_suffix = item['metadata']['namespace'].lower()
-
-    # Original condition-1 check
-    if item.get("spec", {}).get("multiAZ", False) and not namespace_suffix.endswith(tuple(multiAZ_suffixCheck)):
-        item['highlight'] = 'condition-1'
-        return item['highlight']
-
-    # Condition for checking both condition-2 and condition-3
-    highlights = []
-    if item.get("spec", {}).get("multiAZ", False) and not namespace_suffix.endswith(tuple(multiAZ_prodCheck)):
-        highlights.append('condition-2')
-    if item['spec']['awsRegion'] == 'us-west-2' and not namespace_suffix.endswith(tuple(westregion_deployCheck)):
-        highlights.append('condition-3')
-
-    if highlights:
-        item['highlight'] = ' '.join(highlights)  # This will add both condition-2 and condition-3 if they are met
-        return item['highlight']
-
-    # Default case
-    item['highlight'] = ''
-    return item['highlight']
+@app.after_request
+def add_cache_control(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "-1"
+    return response
