@@ -44,13 +44,17 @@
             background-color: #0056b3;
         }
 
-        #exclude-button {
-            background-color: #FF4500; /* Orange-red color for Exclude button */
-            color: white;
+        #exclude-input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-left: 5px;
+            width: 200px; /* Adjust the width as needed */
+            transition: border 0.3s;
         }
 
-        #exclude-button:hover {
-            background-color: #c33600;
+        #exclude-input:focus {
+            border-color: #007BFF;
         }
 
     </style>
@@ -61,7 +65,7 @@
       <label id="total-cost-label" for="total-cost">Total Cost:</label>
       <span id="total-cost">0.00</span>
       <button id="total-cost-button" class="action-button">Calculate</button>
-      <button id="exclude-button" class="action-button">Exclude</button>
+      <input type="text" id="exclude-input" placeholder="Exclude keywords...">
     </div>
     ...
 </body>
