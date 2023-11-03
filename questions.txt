@@ -1,0 +1,53 @@
+Of course!
+
+**Host Line:** "Ladies and gentlemen, today we're going to delve deep into our PostgreSQL setup across DDX's OCP clusters. It's not just about understanding our current setup but, more importantly, about identifying areas where we can achieve significant cost savings. Through this session, we aim to optimize our resources and ensure we are only spending where it's necessary. So, let's take this journey together and see how we can make our PostgreSQL setup more efficient and cost-effective!"
+
+1. **In How many regions are our DDX PostgreSQL Instances running?**
+   - A. 1
+   - B. 2
+   - C. 3
+   - D. 4
+   
+2. **Which environments are multi-region?**
+   - A. prod
+   - B. stage
+   - C. nft
+   - D. pre-prod
+   
+3. **What storageType should we be using while provisioning a PostgreSQL Instance?**
+   - A. SSD
+   - B. HDD
+   - C. Magnetic
+   - D. Provisioned IOPS
+   
+4. **In which environments should multiAZ be set to true?**
+   - A. prod and stage
+   - B. nft and pre-prod
+   - C. prod, stage, and nft
+   - D. Only in prod
+   
+5. **Which nodeTypes are recommended for use in pre-prod environments?**
+   - A. db.xlarge
+   - B. db.medium
+   - C. db.small
+   - D. db.micro
+   
+6. **What is the current overall cost of the PostgreSQL instances running in DDX?**
+   - A. $10,000/month
+   - B. $20,000/month
+   - C. $30,000/month
+   - D. $40,000/month
+   
+7. **What is the cost in the us-west-2 region alone?**
+   - A. $2,000/month
+   - B. $5,000/month
+   - C. $8,000/month
+   - D. $10,000/month
+   
+8. **What is the cost with multiAZ enabled?**
+   - A. $15,000/month
+   - B. $20,000/month
+   - C. $25,000/month
+   - D. $30,000/month
+
+Please note: The answer choices provided are generic and might not reflect the actual data or your specific configuration. You'll need to adjust them to fit the actual data and scenario.
