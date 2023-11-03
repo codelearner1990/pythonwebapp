@@ -1,0 +1,51 @@
+Of course! Let's modify the script based on your feedback.
+
+---
+
+**Opening Line:** 
+"Hello everyone! Today, I'll show you a fascinating tool we've developed. It captures PostgreSQL instance data from all our OCP clusters, letting us double-check our configurations and understand our usage."
+
+---
+
+**Introducing the Web Tool:** 
+"This tool is our PostgreSQL compass. It lays out where our databases are, how they're structured, and what they cost us. Essentially, it's our birds-eye view on everything PostgreSQL-related."
+
+---
+
+**Colors Tell a Story:**
+"Notice the colors on the screen? They're not just for decoration. They give us quick insights. For instance:
+- If you see a specific color, it might mean that a database is in the 'us-west-2' region when it shouldn't be.
+- Another color might hint that multiAZ is enabled where it isn't needed.
+- And if you spot another hue, it could be signaling that a pre-prod environment is using a larger database than necessary."
+
+---
+
+**Using the Filter:** 
+"And over there, is our special search bar. It's like our microscope. Want details about a specific region or environment? Just type it in and zero in on the specifics."
+
+---
+
+**Digging Into Details:** 
+"Every box, every color, every word here is a piece of our PostgreSQL puzzle:
+- What size is that database? Is it a giant or a tiny one?
+- Which corner of our world is it in? East or West?
+- And is it enjoying a backup? Like, has it got multiAZ switched on?"
+
+---
+
+**How We Save:** 
+"Imagine your wallet with tiny holes. That's our setup without this tool. Money keeps slipping away. But now, with this tool, we're spotting those holes and plugging them up."
+
+---
+
+**The Bigger Picture:** 
+"It's not just about pennies and dollars. It's about efficiency. It's about ensuring we're getting the best out of our resources. This tool? It's our guide to that."
+
+---
+
+**Ending:** 
+"I'm really thrilled about this. It's not just a tool; it's our strategy, our way forward. Thank you for tuning in. I'm eager to hear your thoughts and questions."
+
+---
+
+This should add more depth to your presentation and address the specific points you mentioned.
