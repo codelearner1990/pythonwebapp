@@ -96,3 +96,52 @@ def generate_deployments_html():
 </div>
 </body>
 </html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kubernetes Deployments</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .container { margin-top: 20px; }
+        .deployment-card { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Kubernetes Deployments</h1>
+    <div class="row">
+        {% for deployment in deployments %}
+            <div class="col-md-4">
+                <div class="card deployment-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ deployment.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ deployment.namespace }}</h6>
+                        <p class="card-text">
+                            Replicas: {{ deployment.replicas }}<br>
+                            Strategy: {{ deployment.strategy_type }}<br>
+                            Assignment Group: {{ deployment.assignment_group }}<br>
+                            Support Assignment Group: {{ deployment.support_assignment_group }}<br>
+                            Main Container Image: {{ deployment.container_image }}<br>
+                            Resources: {{ deployment.resources|tojson }}<br>
+                            Probes: 
+                            <ul>
+                                <li>Liveness: {{ deployment.probes.liveness_probe|tojson }}</li>
+                                <li>Readiness: {{ deployment.probes.readiness_probe|tojson }}</li>
+                                <li>Startup: {{ deployment.probes.startup_probe|tojson }}</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
+
